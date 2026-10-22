@@ -13,3 +13,5 @@ WORKDIR /app
 COPY --from=builder /app/.venv .venv/
 COPY . .
 CMD ["/app/.venv/bin/fastapi", "run"]
+
+uvicorn drive_server:app --host 0.0.0.0 --port 8080
