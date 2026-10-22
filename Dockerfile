@@ -1,17 +1,18 @@
-FROM python:3.12.15 AS builder
+# تحديد الصورة الأساسية لبايثون
+FROM python:3.10-slim
 
-ENV PYTHONUNBUFFERED=1 \
-    PYTHONDONTWRITEBYTECODE=1
+# تحديد مجلد العمل داخل الحاوية
 WORKDIR /app
 
+# نسخ ملف المتطلبات وتثبيتها
+COPY requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
 
-RUN python -m venv .venv
-COPY requirements.txt ./
-RUN .venv/bin/pip install -r requirements.txt
-FROM python:3.12.15-slim
-WORKDIR /app
-COPY --from=builder /app/.venv .venv/
+# نسخ باقي الملفات
 COPY . .
-CMD ["/app/.venv/bin/fastapi", "run"]
 
-uvicorn drive_server:app --host 0.0.0.0 --port 8080
+# فتح البورت المطلوب
+EXPOSE 8080
+
+# أمر تشغيل السيرفر (تأكد من وجود كلمة CMD في البداية هكذا)
+CMD ["uvicorn", "drive_server:app", "--host", "0.0.0.0", "--port", "8080"]
