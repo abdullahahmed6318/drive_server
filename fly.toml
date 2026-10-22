@@ -3,22 +3,27 @@
 # See https://fly.io/docs/reference/configuration/ for information about how to use this file.
 #
 
-app = 'drive-server'
-primary_region = 'ams'
+app = "drive-server"
+primary_region = "ams"
 
 [build]
 
-[experimental]
-  allowed_public_ports = []
-  auto_rollout = true
-  
 [http_service]
   internal_port = 8080
   force_https = true
-  auto_stop_machines = 'stop'
+  auto_stop_machines = true
   auto_start_machines = true
   min_machines_running = 0
-  processes = ['app']
+
+[[services]]
+  protocol = "tcp"
+  internal_port = 8080
+  [[services.ports]]
+    port = 80
+    handlers = ["http"]
+  [[services.ports]]
+    port = 443
+    handlers = ["tls", "http"]
 
 [[vm]]
   memory = '1gb'
